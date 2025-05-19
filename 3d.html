@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material Selection Shop</title>
+  <link rel="stylesheet" href="ogcart.css">
+</head>
+<body>
+  <!-- Fixed ticker bar at top -->
+  <div class="ticker">
+    <div class="ticker-content">
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+      <span>Bulk.com</span>
+    </div>
+  </div>
+  <!-- Search bar -->
+  <div class="search-container">
+    <input type="text" id="search-bar" placeholder="Search materials..." />
+  </div>
+  
+  <!-- Main content container -->
+  <div class="container">
+    <h1 class="head">Choose the Material</h1>
+    <button id="compare-btn" class="compare-btn" disabled>Compare Selected (0/2)</button>
+    <div id="product-container" class="product-grid"></div>
+  </div>
+
+  <!-- Cart icon and counter -->
+  <div class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-count">0</span>
+  </div>
+
+  <!-- Cart sidebar -->
+  <div class="cart-sidebar">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="close-cart"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items">
+      <!-- Cart items will be dynamically added here -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span class="total-price">$0.00</span>
+      </div>
+      <button class="checkout-btn">Checkout</button>
+      <button class="clear-cart-btn">Clear Cart</button>
+    </div>
+  </div>
+  
+  <!-- Comparison Modal -->
+  <div class="compare-modal" id="compare-modal">
+    <div class="compare-content">
+      <button class="close-compare">
+        <span class="cross-icon"></span>
+      </button>
+      <h2>Material Comparison</h2>
+      <div id="compare-table"></div>
+    </div>
+  </div>
+
+  <!-- Material Spotlight Section -->
+  <!-- <div class="spotlight-container" id="spotlight-container">
+    <div class="spotlight-content">
+      <div class="spotlight-image">
+        <img id="spotlight-image" src="" alt="Spotlight Material">
+      </div>
+      <div class="spotlight-info">
+        <h3 id="spotlight-name">Spotlight Material</h3>
+        <p id="spotlight-description">Discover the best material for your needs!</p>
+        <a id="spotlight-buy-link" href="payment.html">
+          <button class="spotlight-btn">Buy Now</button>
+        </a>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 Bulk.com | All Materials Sourced Ethically</p>
+  </footer>
+
+  <script>
+    // Product data with comparison properties and spotlight descriptions
+    const products = [
+      {
+        id: 1,
+        name: "Classic Denim",
+        price: 7.99,
+        material: "denim",
+        image: "https://5.imimg.com/data5/SELLER/Default/2023/9/348851154/LZ/OU/WQ/4410597/denim-fabric-500x500.jpeg",
+        badge: "Best Seller",
+        reviews: [],
+        comparison: {
+          durability: "High",
+          softness: "Low",
+          costEffectiveness: "High"
+        },
+        spotlightDescription: "Timeless and durable, Classic Denim is perfect for rugged, everyday wear."
+      },
+      {
+        id: 2,
+        name: "Wool",
+        price: 8.99,
+        material: "wool",
+        image: "https://www.longancraft.com/cdn/shop/articles/Different-Types-of-Wool-Fabric-The-Ultimate-Guide-870x570.jpg?v=1723518765",
+        badge: "Premium",
+        reviews: [],
+        comparison: {
+          durability: "Medium",
+          softness: "High",
+          costEffectiveness: "Medium"
+        },
+        spotlightDescription: "Warm and cozy, Wool offers premium comfort for colder days."
+      },
+      {
+        id: 3,
+        name: "Cotton",
+        price: 19.99,
+        material: "Cotton",
+        image: "https://threadcurve.com/wp-content/uploads/2021/04/types-of-cotton-fabric-Apr222021-10-1.jpg",
+        badge: "Organic",
+        reviews: [],
+        comparison: {
+          durability: "Medium",
+          softness: "Medium",
+          costEffectiveness: "Low"
+        },
+        spotlightDescription: "Soft and breathable, Organic Cotton is ideal for sustainable fashion."
+      },
+      {
+        id: 4,
+        name: "Silk",
+        price: 39.99,
+        material: "silk",
+        image: "https://gingerlily.co.uk/cdn/shop/articles/GINGERLILY_TEAL_FABRIC_SHOT2.jpg?v=1663256544",
+        badge: "Luxury",
+        reviews: [],
+        comparison: {
+          durability: "Low",
+          softness: "Very High",
+          costEffectiveness: "Very Low"
+        },
+        spotlightDescription: "Luxurious and smooth, Silk adds elegance to any wardrobe."
+      }
+    ];
+
+    // Array to store selected products for comparison
+    let selectedForComparison = [];
+
+    // Function to render product cards
+    function renderProducts() {
+      const productContainer = document.getElementById('product-container');
+      productContainer.innerHTML = ''; // Clear existing content
+
+      products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+        productCard.innerHTML = `
+          ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ''}
+          <div class="product-image-container">
+            <img src="${product.image}" alt="${product.name}" class="product-image">
+          </div>
+          <div class="product-info">
+            <h2 class="product-name">${product.name}</h2>
+            <div class="product-material">Material: ${product.material}</div>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <a href="payment.html">
+              <button class="product-btn">Buy now</button>
+            </a>
+            <label class="compare-checkbox">
+              <input type="checkbox" class="compare-check" data-product-id="${product.id}">
+              Compare
+            </label>
+            <div class="review-section">
+              <h3>Leave a Review</h3>
+              <form class="review-form" data-product-id="${product.id}">
+                <input type="text" class="review-user" placeholder="Your Name" required>
+                <input type="number" class="review-rating" placeholder="Rating (1-5)" min="1" max="5" required>
+                <textarea class="review-comment" placeholder="Your Comment" required></textarea>
+                <button type="submit">Submit Review</button>
+              </form>
+              <div class="reviews-list" data-reviews-id="${product.id}">
+                ${product.reviews.length > 0 ? 
+                  product.reviews.map(review => `
+                    <div class="review">
+                      <p><strong>${review.user}</strong> (${review.rating}/5)</p>
+                      <p>${review.comment}</p>
+                    </div>
+                  `).join('') : 
+                  '<p>No reviews yet.</p>'}
+              </div>
+            </div>
+          </div>
+        `;
+        productContainer.appendChild(productCard);
+      });
+
+      // Add event listeners to review forms
+      document.querySelectorAll('.review-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const productId = parseInt(this.getAttribute('data-product-id'));
+          const user = this.querySelector('.review-user').value;
+          const rating = parseFloat(this.querySelector('.review-rating').value);
+          const comment = this.querySelector('.review-comment').value;
+
+          // Validate rating
+          if (rating < 1 || rating > 5) {
+            alert("Rating must be between 1 and 5!");
+            return;
+          }
+
+          // Add review to the product's reviews array
+          const product = products.find(p => p.id === productId);
+          product.reviews.push({ user, rating, comment });
+
+          // Clear form
+          this.reset();
+
+          // Re-render products to show the new review
+          renderProducts();
+        });
+      });
+
+      // Add event listeners to comparison checkboxes
+      document.querySelectorAll('.compare-check').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const productId = parseInt(this.getAttribute('data-product-id'));
+          if (this.checked) {
+            if (selectedForComparison.length < 2) {
+              selectedForComparison.push(productId);
+            } else {
+              this.checked = false;
+              alert("You can only compare 2 materials at a time!");
+            }
+          } else {
+            selectedForComparison = selectedForComparison.filter(id => id !== productId);
+          }
+          updateCompareButton();
+        });
+      });
+    }
+
+    // Function to update the "Compare Selected" button
+    function updateCompareButton() {
+      const compareBtn = document.getElementById('compare-btn');
+      compareBtn.textContent = `Compare Selected (${selectedForComparison.length}/2)`;
+      compareBtn.disabled = selectedForComparison.length !== 2;
+    }
+
+    // Function to render the comparison table
+    function renderComparisonTable() {
+      const compareTable = document.getElementById('compare-table');
+      if (selectedForComparison.length !== 2) {
+        compareTable.innerHTML = '<p>Please select exactly 2 materials to compare.</p>';
+        return;
+      }
+
+      const product1 = products.find(p => p.id === selectedForComparison[0]);
+      const product2 = products.find(p => p.id === selectedForComparison[1]);
+
+      compareTable.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>${product1.name}</th>
+              <th>${product2.name}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Durability</td>
+              <td>${product1.comparison.durability}</td>
+              <td>${product2.comparison.durability}</td>
+            </tr>
+            <tr>
+              <td>Softness</td>
+              <td>${product1.comparison.softness}</td>
+              <td>${product2.comparison.softness}</td>
+            </tr>
+            <tr>
+              <td>Cost-Effectiveness</td>
+              <td>${product1.comparison.costEffectiveness}</td>
+              <td>${product2.comparison.costEffectiveness}</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>$${product1.price.toFixed(2)}</td>
+              <td>$${product2.price.toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Open comparison modal
+    document.getElementById('compare-btn').addEventListener('click', () => {
+      const modal = document.getElementById('compare-modal');
+      modal.classList.add('open');
+      renderComparisonTable();
+    });
+
+    // Close comparison modal
+    document.querySelector('.close-compare').addEventListener('click', () => {
+      const modal = document.getElementById('compare-modal');
+      modal.classList.remove('open');
+    });
+
+    // Initial render
+    renderProducts();
+
+    // Search functionality
+    document.getElementById('search-bar').addEventListener('input', function () {
+      const searchQuery = this.value.toLowerCase();
+      document.querySelectorAll('.product-card').forEach(card => {
+        const productName = card.querySelector('.product-name').textContent.toLowerCase();
+        const materialName = card.querySelector('.product-material').textContent.toLowerCase();
+        if (productName.includes(searchQuery) || materialName.includes(searchQuery)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+
+    // Material Spotlight Functionality
+    function updateSpotlight() {
+      const spotlightImage = document.getElementById('spotlight-image');
+      const spotlightName = document.getElementById('spotlight-name');
+      const spotlightDescription = document.getElementById('spotlight-description');
+      const spotlightBuyLink = document.getElementById('spotlight-buy-link');
+
+      // Randomly select a product
+      const randomProduct = products[Math.floor(Math.random() * products.length)];
+
+      // Update spotlight content with fade animation
+      const spotlightContent = document.querySelector('.spotlight-content');
+      spotlightContent.style.opacity = 0;
+      setTimeout(() => {
+        spotlightImage.src = randomProduct.image;
+        spotlightName.textContent = randomProduct.name;
+        spotlightDescription.textContent = randomProduct.spotlightDescription;
+        spotlightBuyLink.href = "payment.html"; // You can customize this link if needed
+        spotlightContent.style.opacity = 1;
+      }, 300);
+    }
+
+    // Initial spotlight update
+    updateSpotlight();
+
+    // Update spotlight every 10 seconds
+    setInterval(updateSpotlight, 10000);
+  </script>
+</body>
+</html>
