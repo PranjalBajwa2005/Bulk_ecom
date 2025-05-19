@@ -1,0 +1,116 @@
+/* General Styles */
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #e6e1dc;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Ticker Styling */
+.ticker {
+    width: 100%;
+    height: 50px;
+    background-color: black;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  
+  /* Moving content with original animation */
+  .ticker-content {
+    display: flex;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: tickerMove 10s linear infinite;
+  }
+  
+  /* Each "Bulk.com" styled consistently */
+  .ticker-content span {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 0 40px;
+    position: relative;
+  }
+  
+  /* Add subtle separator between ticker items */
+  .ticker-content span::after {
+    content: '|';
+    position: absolute;
+    right: 10px;
+    opacity: 0.4;
+  }
+  
+  /* Original animation preserved */
+  @keyframes tickerMove {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+/* Payment Container */
+.payment-container {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 350px;
+    margin-left: 500px;
+    position: absolute;
+    margin-top: 100px;
+    text-align: center;
+}
+.payment-container h2 {
+    margin-bottom: 20px;
+}
+
+/* Form Fields */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+.row div {
+    width: 48%;
+}
+
+/* Button */
+button {
+    width: 100%;
+    background: black;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:hover {
+    background: #333;
+}
+
+/* Footer */
+footer {
+    background: black;
+    color: white;
+    padding: 15px;
+    margin-top: 20px;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
